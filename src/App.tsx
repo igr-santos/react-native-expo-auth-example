@@ -4,7 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { RootStack } from './navigation';
 import { NavigationContainer } from '@react-navigation/native';
-import { NotFound } from './navigation/screens/NotFound';
+// import { NotFound } from './navigation/screens/NotFound';
+import { AuthProvider } from './context/AuthContext'
 
 Asset.loadAsync([
   ...NavigationAssets,
@@ -16,24 +17,26 @@ SplashScreen.preventAutoHideAsync();
 
 export function App() {
   return (
-    <NavigationContainer
-      linking={{
-        enabled: true,
-        prefixes: [
-          // Change the scheme to match your app's scheme defined in app.json
-          'helloworld://',
-        ],
-        config: {
-          screens: {
-            NotFound: '*'
+    <AuthProvider>
+      <NavigationContainer
+        linking={{
+          enabled: true,
+          prefixes: [
+            // Change the scheme to match your app's scheme defined in app.json
+            'helloworld://',
+          ],
+          config: {
+            screens: {
+              NotFound: '*'
+            }
           }
-        }
-      }}
-      onReady={() => {
-        SplashScreen.hideAsync();
-      }}
-    >
-      <RootStack />
-    </NavigationContainer>
+        }}
+        onReady={() => {
+          SplashScreen.hideAsync();
+        }}
+      >
+        <RootStack />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }

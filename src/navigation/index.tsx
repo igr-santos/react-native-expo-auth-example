@@ -1,9 +1,10 @@
+import { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderButton, Text } from '@react-navigation/elements';
-import {
-  createStaticNavigation,
-  StaticParamList,
-} from '@react-navigation/native';
+// import { HeaderButton, Text } from '@react-navigation/elements';
+// import {
+//   createStaticNavigation,
+//   StaticParamList,
+// } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { createStackNavigator } from '@react-navigation/stack';
 import { Image } from 'react-native';
@@ -14,6 +15,8 @@ import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
+import { SignIn } from './screens/SignIn';
+import { AuthContext } from '../context/AuthContext'
 
 
 const Tabs = createBottomTabNavigator();
@@ -54,94 +57,22 @@ function HomeTabs() {
   )
 }
 
-// const HomeTabs_ = createBottomTabNavigator({
-//   screens: {
-//     Home: {
-//       screen: Home,
-//       options: {
-//         title: 'Feed',
-//         tabBarIcon: ({ color, size }) => (
-//           <Image
-//             source={newspaper}
-//             tintColor={color}
-//             style={{
-//               width: size,
-//               height: size,
-//             }}
-//           />
-//         ),
-//       },
-//     },
-//     Updates: {
-//       screen: Updates,
-//       options: {
-//         tabBarIcon: ({ color, size }) => (
-//           <Image
-//             source={bell}
-//             tintColor={color}
-//             style={{
-//               width: size,
-//               height: size,
-//             }}
-//           />
-//         ),
-//       },
-//     },
-//   },
-// });
-
-// const RootStack = createNativeStackNavigator({
-//   screens: {
-//     HomeTabs: {
-//       screen: HomeTabs,
-//       options: {
-//         title: 'Home',
-//         headerShown: false,
-//       },
-//     },
-//     Profile: {
-//       screen: Profile,
-//       linking: {
-//         path: ':user(@[a-zA-Z0-9-_]+)',
-//         parse: {
-//           user: (value) => value.replace(/^@/, ''),
-//         },
-//         stringify: {
-//           user: (value) => `@${value}`,
-//         },
-//       },
-//     },
-//     Settings: {
-//       screen: Settings,
-//       options: ({ navigation }) => ({
-//         presentation: 'modal',
-//         headerRight: () => (
-//           <HeaderButton onPress={navigation.goBack}>
-//             <Text>Close</Text>
-//           </HeaderButton>
-//         ),
-//       }),
-//     },
-//     NotFound: {
-//       screen: NotFound,
-//       options: {
-//         title: '404',
-//       },
-//       linking: {
-//         path: '*',
-//       },
-//     },
-//   },
-// });
-
 const Stack = createNativeStackNavigator();
 
 export function RootStack() {
+  const { state } = useContext(AuthContext);
+
   return (
-    <Stack.Navigator initialRouteName="HomeTabs">
-      <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ title: "Home", headerShown: false }} />
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Settings" component={Settings} />
+    <Stack.Navigator initialRouteName={state.isSignedIn ? "HomeTabs" : "SignIn"}>
+      {state.isSignedIn ? (
+        <>
+          <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ title: "Home", headerShown: false }} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Settings" component={Settings} />
+        </>
+      ) : (
+        <Stack.Screen name="SignIn" component={SignIn} options={{ animationTypeForReplace: 'pop' }} />
+      )}
       <Stack.Screen name="NotFound" component={NotFound} options={{ title: "404" }} />
     </Stack.Navigator>
   )

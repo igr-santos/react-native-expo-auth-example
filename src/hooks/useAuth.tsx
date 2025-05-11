@@ -1,6 +1,7 @@
 import React, { createContext, useMemo, useReducer, useEffect, useContext } from 'react';
 import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import * as SecureStore from 'expo-secure-store';
 
 // 
 WebBrowser.maybeCompleteAuthSession();
@@ -120,10 +121,17 @@ export function AuthProvider({ children }: Props) {
     scopes: ['openid', 'profile']
   }, discovery);
 
-  // effect exemplo: carregar do async storage
+  // effect: load session by SecureStore
   useEffect(() => {
-    console.log('Simulando verificação de sessão...');
-    // Aqui você pode fazer uma chamada para verificar sessão ou token
+    const restoreSession = async () => {
+      const accessToken = await SecureStore.getItemAsync('accessToken');
+      const idToken = await SecureStore.getItemAsync('idToken');
+      if (accessToken && idToken) {
+        dispatch({ type: 'SIGN_IN', payload: { access_token: accessToken, id_token: idToken } });
+      }
+    };
+
+    restoreSession();
   }, []);
 
   // effect: load user info
@@ -167,6 +175,10 @@ export function AuthProvider({ children }: Props) {
 
         if (token?.access_token && token?.id_token) {
           dispatch({ type: 'SIGN_IN', payload: token });
+
+          // Save tokens in SecureStore to restore session
+          await SecureStore.setItemAsync('accessToken', token.access_token);
+          await SecureStore.setItemAsync('idToken', token.id_token);
         }
       }
     } catch (err) {
@@ -178,6 +190,9 @@ export function AuthProvider({ children }: Props) {
     try {
       await fetch(`${process.env.EXPO_PUBLIC_KEYCLOAK_URL}/protocol/openid-connect/logout?id_token_hint=${state.idToken}`)
       dispatch({ type: 'SIGN_OUT' });
+
+      await SecureStore.deleteItemAsync('accessToken');
+      await SecureStore.deleteItemAsync('idToken');
     } catch (err) {
       console.warn(err);
     }

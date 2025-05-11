@@ -19,6 +19,7 @@
     "expo-auth-session": "~6.1.5",
     "expo-crypto": "~14.1.4",
     "expo-dev-client": "~5.1.7",
+    "expo-secure-store": "~14.2.3",
     "expo-splash-screen": "~0.30.7",
     "expo-system-ui": "~5.0.6",
     "react": "19.0.0",

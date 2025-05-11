@@ -4,8 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { RootStack } from './navigation';
 import { NavigationContainer } from '@react-navigation/native';
-// import { NotFound } from './navigation/screens/NotFound';
-import { AuthProvider } from './context/AuthContext'
+import { NotFound } from './navigation/screens/NotFound';
+import { AuthProvider } from './hooks/useAuth'
 
 Asset.loadAsync([
   ...NavigationAssets,
@@ -23,7 +23,7 @@ export function App() {
           enabled: true,
           prefixes: [
             // Change the scheme to match your app's scheme defined in app.json
-            'helloworld://',
+            'rnexpooauth://',
           ],
           config: {
             screens: {

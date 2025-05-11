@@ -16,7 +16,7 @@ import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
 import { SignIn } from './screens/SignIn';
-import { AuthContext } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 
 const Tabs = createBottomTabNavigator();
@@ -60,7 +60,7 @@ function HomeTabs() {
 const Stack = createNativeStackNavigator();
 
 export function RootStack() {
-  const { state } = useContext(AuthContext);
+  const { state } = useAuth();
 
   return (
     <Stack.Navigator initialRouteName={state.isSignedIn ? "HomeTabs" : "SignIn"}>

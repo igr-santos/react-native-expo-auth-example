@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { Button as NavigationButton, Text } from '@react-navigation/elements';
 import { StyleSheet, View, Button } from 'react-native';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Home() {
-  const { signOut } = useContext(AuthContext);
+  const { signOut } = useAuth();
 
   return (
     <View style={styles.container}>

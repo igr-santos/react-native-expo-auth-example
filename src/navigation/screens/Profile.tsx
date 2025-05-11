@@ -1,19 +1,14 @@
 import { Text } from '@react-navigation/elements';
-import type { ParamListBase } from '@react-navigation/native';
-import { useRoute } from '@react-navigation/native';
 import { StyleSheet, View } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
 
-type Params = {
-  user: string;
-};
 
 export function Profile() {
-  const route = useRoute();
-  const params = route.params as Params;
+  const { state } = useAuth();
 
   return (
     <View style={styles.container}>
-      <Text>{params.user}'s Profile</Text>
+      <Text>{state.userInfo?.givenName}'s Profile</Text>
     </View>
   );
 }

@@ -12,6 +12,7 @@ type UserInfo = {
   givenName: string;
   familyName: string;
   email: string;
+  roles: string[]
 }
 
 type AuthState = {
@@ -24,12 +25,13 @@ type AuthState = {
 type AuthContextType = {
   state: AuthState;
   signIn: () => void,
-  signOut: () => void
+  signOut: () => void,
+  hasRole: (role: string) => boolean;
 }
 
 type Action =
   | { type: 'SIGN_IN', payload: { access_token: string, id_token: string } }
-  | { type: 'USER_INFO', payload: { preferred_username: string, given_name: string, family_name: string, email: string } }
+  | { type: 'USER_INFO', payload: { preferred_username: string, given_name: string, family_name: string, email: string, roles: string[] } }
   | { type: 'SIGN_OUT' }
 
 const initialState: AuthState = {
@@ -57,7 +59,8 @@ const authReducer = (previousState: AuthState, action: Action): AuthState => {
           username: action.payload.preferred_username,
           givenName: action.payload.given_name,
           familyName: action.payload.family_name,
-          email: action.payload.email
+          email: action.payload.email,
+          roles: action.payload.roles
         }
       }
     case 'SIGN_OUT':
@@ -70,7 +73,7 @@ const redirectUri = makeRedirectUri({
   // TODO: Acontece algo que vez em quando preciso mudar
   // alguma coisas nesse metódo para o modal com a página
   // ser aberto
-  native: "rnexpooauth://redirect"
+  // native: "rnexpooauth://redirect"
 })
 
 const getToken = async ({ code, codeVerifier, redirectUri }: any) => {
@@ -201,7 +204,8 @@ export function AuthProvider({ children }: Props) {
   const value = useMemo(() => ({
     state,
     signIn,
-    signOut
+    signOut,
+    hasRole: (role: string) => state.userInfo?.roles.indexOf(role) !== -1
   }), [state]);
 
   return (

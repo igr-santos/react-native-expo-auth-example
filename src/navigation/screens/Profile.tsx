@@ -4,11 +4,12 @@ import { useAuth } from '../../hooks/useAuth';
 
 
 export function Profile() {
-  const { state } = useAuth();
+  const { state, hasRole } = useAuth();
 
   return (
     <View style={styles.container}>
-      <Text>{state.userInfo?.givenName}'s Profile</Text>
+      <Text>{state.userInfo?.givenName} Profile</Text>
+      <Text>{hasRole("Manager") ? "Manager" : "Common"}</Text>
     </View>
   );
 }
